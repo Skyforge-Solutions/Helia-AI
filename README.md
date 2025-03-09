@@ -1,8 +1,8 @@
 # Helia-AI
 
-<p align="center">
+<!-- <p align="center">
   <img alt="Helia-AI" src="app/(chat)/opengraph-image.png">
-</p>
+</p> -->
 
 <p align="center">
   <strong>A Smart, Personalized AI Chatbot with Real-Time Interactions</strong>
