@@ -1,13 +1,30 @@
-Copyright 2024 Vercel, Inc.
+SKYFORGE PRIVATE LIMITED SOFTWARE LICENSE AGREEMENT
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Copyright (c) 2024 Skyforge Private Limited. All Rights Reserved.
 
-    http://www.apache.org/licenses/LICENSE-2.0
+1. LICENSE GRANT
+   Subject to the terms of this Agreement, Skyforge Private Limited ("Licensor") grants to you ("Licensee") a non-exclusive, non-transferable license to use Helia-AI software ("Software") solely for your personal or internal business purposes.
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+2. RESTRICTIONS
+   Licensee shall not:
+   (a) Modify, translate, reverse engineer, decompile, disassemble or create derivative works based on the Software;
+   (b) Copy, rent, lease, distribute, or otherwise transfer rights to the Software;
+   (c) Remove any proprietary notices or labels on the Software;
+   (d) Use the Software for any commercial purpose without prior written consent from Licensor.
+
+3. PROPRIETARY RIGHTS
+   The Software is the proprietary property of Skyforge Private Limited and is protected by copyright and other intellectual property laws. Licensor retains all right, title, and interest in and to the Software.
+
+4. TERMINATION
+   This license is effective until terminated. Licensor may terminate this license at any time if Licensee breaches any provision of this Agreement. Upon termination, Licensee must destroy all copies of the Software.
+
+5. DISCLAIMER OF WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. LICENSOR DOES NOT WARRANT THAT THE FUNCTIONS CONTAINED IN THE SOFTWARE WILL MEET LICENSEE'S REQUIREMENTS OR THAT THE OPERATION OF THE SOFTWARE WILL BE UNINTERRUPTED OR ERROR-FREE.
+
+6. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY DAMAGES (INCLUDING, WITHOUT LIMITATION, LOST PROFITS, BUSINESS INTERRUPTION, OR LOST INFORMATION) ARISING OUT OF LICENSEE'S USE OF OR INABILITY TO USE THE SOFTWARE.
+
+7. GOVERNING LAW
+   This Agreement shall be governed by the laws of [Your Jurisdiction].
+
+For permission beyond the scope of this license, please contact: [contact information]
