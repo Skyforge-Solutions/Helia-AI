@@ -3,74 +3,95 @@ import { CopyIcon, RedoIcon, UndoIcon } from '@/components/icons';
 import { ImageEditor } from '@/components/image-editor';
 import { toast } from 'sonner';
 
+// Define types to avoid TypeScript errors
+interface StreamPart {
+  type: string;
+  content: unknown;
+}
+
+interface ArtifactState {
+  content: string;
+  isVisible: boolean;
+  status: string;
+  [key: string]: any;
+}
+
+interface VersionChangeHandler {
+  (index: number): void;
+}
+
 export const imageArtifact = new Artifact({
-  kind: 'image',
-  description: 'Useful for image generation',
-  onStreamPart: ({ streamPart, setArtifact }) => {
-    if (streamPart.type === 'image-delta') {
-      setArtifact((draftArtifact) => ({
+  kind: "image",
+  description: "Useful for image generation",
+  onStreamPart: ({
+    streamPart,
+    setArtifact,
+  }: {
+    streamPart: StreamPart;
+    setArtifact: (updater: (draft: ArtifactState) => ArtifactState) => void;
+  }) => {
+    if (streamPart.type === "image-delta") {
+      setArtifact((draftArtifact: ArtifactState) => ({
         ...draftArtifact,
         content: streamPart.content as string,
         isVisible: true,
-        status: 'streaming',
+        status: "streaming",
       }));
     }
   },
   content: ImageEditor,
   actions: [
     {
-      icon: <UndoIcon size={18} />,
-      description: 'View Previous version',
-      onClick: ({ handleVersionChange }) => {
-        handleVersionChange('prev');
+      icon: RedoIcon,
+      name: "Next Version",
+      condition: ({
+        handleVersionChange,
+        currentVersionIndex,
+      }: {
+        handleVersionChange: VersionChangeHandler;
+        currentVersionIndex: number;
+      }) => {
+        return (
+          typeof handleVersionChange === "function" && currentVersionIndex < 2
+        );
       },
-      isDisabled: ({ currentVersionIndex }) => {
-        if (currentVersionIndex === 0) {
-          return true;
-        }
-
-        return false;
-      },
-    },
-    {
-      icon: <RedoIcon size={18} />,
-      description: 'View Next version',
-      onClick: ({ handleVersionChange }) => {
-        handleVersionChange('next');
-      },
-      isDisabled: ({ isCurrentVersion }) => {
-        if (isCurrentVersion) {
-          return true;
-        }
-
-        return false;
+      action: ({
+        handleVersionChange,
+        currentVersionIndex,
+      }: {
+        handleVersionChange: VersionChangeHandler;
+        currentVersionIndex: number;
+      }) => {
+        handleVersionChange(currentVersionIndex + 1);
       },
     },
     {
-      icon: <CopyIcon size={18} />,
-      description: 'Copy image to clipboard',
-      onClick: ({ content }) => {
-        const img = new Image();
-        img.src = `data:image/png;base64,${content}`;
-
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0);
-          canvas.toBlob((blob) => {
-            if (blob) {
-              navigator.clipboard.write([
-                new ClipboardItem({ 'image/png': blob }),
-              ]);
-            }
-          }, 'image/png');
-        };
-
-        toast.success('Copied image to clipboard!');
+      icon: UndoIcon,
+      name: "Previous Version",
+      condition: ({
+        handleVersionChange,
+        isCurrentVersion,
+      }: {
+        handleVersionChange: VersionChangeHandler;
+        isCurrentVersion: boolean;
+      }) => {
+        return typeof handleVersionChange === "function" && !isCurrentVersion;
+      },
+      action: ({
+        handleVersionChange,
+      }: {
+        handleVersionChange: VersionChangeHandler;
+      }) => {
+        handleVersionChange(0);
+      },
+    },
+    {
+      icon: CopyIcon,
+      name: "Copy to Clipboard",
+      action: ({ content }: { content: string }) => {
+        navigator.clipboard.writeText(content);
+        toast.success("Copied to clipboard");
       },
     },
   ],
-  toolbar: [],
 });

@@ -18,9 +18,22 @@ interface TextArtifactMetadata {
   suggestions: Array<Suggestion>;
 }
 
-export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
-  kind: 'text',
-  description: 'Useful for text content, like drafting essays and emails.',
+// Define types to avoid TypeScript errors
+interface StreamPart {
+  type: string;
+  content: unknown;
+}
+
+interface ArtifactState {
+  content: string;
+  isVisible: boolean;
+  status: string;
+  [key: string]: any;
+}
+
+export const textArtifact = new Artifact<"text", TextArtifactMetadata>({
+  kind: "text",
+  description: "Useful for text content, like drafting essays and emails.",
   initialize: async ({ documentId, setMetadata }) => {
     const suggestions = await getSuggestions({ documentId });
 
@@ -28,8 +41,18 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
       suggestions,
     });
   },
-  onStreamPart: ({ streamPart, setMetadata, setArtifact }) => {
-    if (streamPart.type === 'suggestion') {
+  onStreamPart: ({
+    streamPart,
+    setMetadata,
+    setArtifact,
+  }: {
+    streamPart: StreamPart;
+    setMetadata: (
+      updater: (metadata: TextArtifactMetadata) => TextArtifactMetadata
+    ) => void;
+    setArtifact: (updater: (draft: ArtifactState) => ArtifactState) => void;
+  }) => {
+    if (streamPart.type === "suggestion") {
       setMetadata((metadata) => {
         return {
           suggestions: [
@@ -40,20 +63,13 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
       });
     }
 
-    if (streamPart.type === 'text-delta') {
-      setArtifact((draftArtifact) => {
-        return {
-          ...draftArtifact,
-          content: draftArtifact.content + (streamPart.content as string),
-          isVisible:
-            draftArtifact.status === 'streaming' &&
-            draftArtifact.content.length > 400 &&
-            draftArtifact.content.length < 450
-              ? true
-              : draftArtifact.isVisible,
-          status: 'streaming',
-        };
-      });
+    if (streamPart.type === "text-delta") {
+      setArtifact((draftArtifact: ArtifactState) => ({
+        ...draftArtifact,
+        content: (draftArtifact.content || "") + (streamPart.content as string),
+        isVisible: true,
+        status: "streaming",
+      }));
     }
   },
   content: ({
@@ -71,7 +87,7 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
       return <DocumentSkeleton artifactKind="text" />;
     }
 
-    if (mode === 'diff') {
+    if (mode === "diff") {
       const oldContent = getDocumentContentById(currentVersionIndex - 1);
       const newContent = getDocumentContentById(currentVersionIndex);
 
@@ -102,9 +118,9 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
   actions: [
     {
       icon: <ClockRewind size={18} />,
-      description: 'View changes',
+      description: "View changes",
       onClick: ({ handleVersionChange }) => {
-        handleVersionChange('toggle');
+        handleVersionChange("toggle");
       },
       isDisabled: ({ currentVersionIndex, setMetadata }) => {
         if (currentVersionIndex === 0) {
@@ -116,9 +132,9 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
     },
     {
       icon: <UndoIcon size={18} />,
-      description: 'View Previous version',
+      description: "View Previous version",
       onClick: ({ handleVersionChange }) => {
-        handleVersionChange('prev');
+        handleVersionChange("prev");
       },
       isDisabled: ({ currentVersionIndex }) => {
         if (currentVersionIndex === 0) {
@@ -130,9 +146,9 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
     },
     {
       icon: <RedoIcon size={18} />,
-      description: 'View Next version',
+      description: "View Next version",
       onClick: ({ handleVersionChange }) => {
-        handleVersionChange('next');
+        handleVersionChange("next");
       },
       isDisabled: ({ isCurrentVersion }) => {
         if (isCurrentVersion) {
@@ -144,33 +160,33 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
     },
     {
       icon: <CopyIcon size={18} />,
-      description: 'Copy to clipboard',
+      description: "Copy to clipboard",
       onClick: ({ content }) => {
         navigator.clipboard.writeText(content);
-        toast.success('Copied to clipboard!');
+        toast.success("Copied to clipboard!");
       },
     },
   ],
   toolbar: [
     {
       icon: <PenIcon />,
-      description: 'Add final polish',
+      description: "Add final polish",
       onClick: ({ appendMessage }) => {
         appendMessage({
-          role: 'user',
+          role: "user",
           content:
-            'Please add final polish and check for grammar, add section titles for better structure, and ensure everything reads smoothly.',
+            "Please add final polish and check for grammar, add section titles for better structure, and ensure everything reads smoothly.",
         });
       },
     },
     {
       icon: <MessageIcon />,
-      description: 'Request suggestions',
+      description: "Request suggestions",
       onClick: ({ appendMessage }) => {
         appendMessage({
-          role: 'user',
+          role: "user",
           content:
-            'Please add suggestions you have that could improve the writing.',
+            "Please add suggestions you have that could improve the writing.",
         });
       },
     },

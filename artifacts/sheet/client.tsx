@@ -10,7 +10,18 @@ import { SpreadsheetEditor } from '@/components/sheet-editor';
 import { parse, unparse } from 'papaparse';
 import { toast } from 'sonner';
 
-type Metadata = any;
+// Define types to avoid TypeScript errors
+interface StreamPart {
+  type: string;
+  content: unknown;
+}
+
+interface ArtifactState {
+  content: string;
+  isVisible: boolean;
+  status: string;
+  [key: string]: any;
+}
 
 export const sheetArtifact = new Artifact<'sheet', Metadata>({
   kind: 'sheet',
@@ -23,6 +34,14 @@ export const sheetArtifact = new Artifact<'sheet', Metadata>({
         content: streamPart.content as string,
         isVisible: true,
         status: 'streaming',
+      }));
+    }
+
+    if (streamPart.type === "sheet-delta" && streamPart.content === "{}") {
+      setArtifact((draftArtifact) => ({
+        ...draftArtifact,
+        isVisible: true,
+        status: "streaming",
       }));
     }
   },

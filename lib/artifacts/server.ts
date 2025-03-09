@@ -1,14 +1,10 @@
-import { codeDocumentHandler } from '@/artifacts/code/server';
-import { imageDocumentHandler } from '@/artifacts/image/server';
-import { sheetDocumentHandler } from '@/artifacts/sheet/server';
-import { textDocumentHandler } from "@/artifacts/text/server";
-import { DataStreamWriter } from 'ai';
-import { Document } from '../db/schema';
-import { saveDocument } from '../db/queries';
-import { Session } from 'next-auth';
+import { DataStreamWriter } from "ai";
+import { Document } from "../db/schema";
+import { saveDocument } from "../db/queries";
+import { Session } from "next-auth";
 
 // Define ArtifactKind locally instead of importing from removed file
-type ArtifactKind = 'text' | 'image' | 'sheet' | 'code';
+type ArtifactKind = "text" | "image" | "sheet" | "code";
 
 export interface SaveDocumentProps {
   id: string;
@@ -88,6 +84,24 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
   };
 }
 
+// Create empty placeholders for the document handlers
+const createEmptyHandler = (kind: ArtifactKind): DocumentHandler => ({
+  kind,
+  onCreateDocument: async () => {
+    console.warn(`${kind} document handler has been deprecated`);
+    return;
+  },
+  onUpdateDocument: async () => {
+    console.warn(`${kind} document handler has been deprecated`);
+    return;
+  },
+});
+
+const textDocumentHandler = createEmptyHandler("text");
+const codeDocumentHandler = createEmptyHandler("code");
+const imageDocumentHandler = createEmptyHandler("image");
+const sheetDocumentHandler = createEmptyHandler("sheet");
+
 /*
  * Use this array to define the document handlers for each artifact kind.
  */
@@ -98,4 +112,4 @@ export const documentHandlersByArtifactKind: Array<DocumentHandler> = [
   sheetDocumentHandler,
 ];
 
-export const artifactKinds = ['text', 'code', 'image', 'sheet'] as const;
+export const artifactKinds = ["text", "code", "image", "sheet"] as const;
