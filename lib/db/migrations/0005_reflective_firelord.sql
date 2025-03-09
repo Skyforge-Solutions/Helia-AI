@@ -1,0 +1,1 @@
+ALTER TABLE "User" ADD COLUMN "credits" integer DEFAULT 100 NOT NULL;
